@@ -1,68 +1,13 @@
-Speedup Test::Unit + RSpec + Cucumber by running parallel on multiple CPUs (or cores).<br/>
-ParallelTests splits tests into even groups and runs each group in a single process with its own database.
-
-Setup for Rails
-===============
-## Install
-### Rails 3
-If you use RSpec: ensure you got >= 2.4
-
-As gem
-
-    # add to Gemfile
-    gem "parallel_tests", :group => :development
-
-OR as plugin
-
-    rails plugin install git://github.com/grosser/parallel_tests.git
-
-    # add to Gemfile
-    gem "parallel", :group => :development
-
-
-### Rails 2
-
-As gem
-
-    gem install parallel_tests
-
-    # add to config/environments/development.rb
-    config.gem "parallel_tests"
-
-    # add to Rakefile
-    begin; require 'parallel_tests/tasks'; rescue LoadError; end
-
-OR as plugin
-
-    gem install parallel
-
-    # add to config/environments/development.rb
-    config.gem "parallel"
-
-    ./script/plugin install git://github.com/grosser/parallel_tests.git
-
-## Setup
-ParallelTests uses 1 database per test-process, 2 processes will use `*_test` and `*_test2`.
-
-
-### 1: Add to `config/database.yml`
-    test:
-      database: xxx_test<%= ENV['TEST_ENV_NUMBER'] %>
-
-### 2: Create additional database(s)
-    rake parallel:create
-
-### 3: Copy development schema (repeat after migrations)
-    rake parallel:prepare
+Speedup RSpec + Cucumber by running parallel on multiple CPUs (or cores).<br/>
+ParallelTests runs each file with individual process.
 
 ### 4: Run!
-    rake parallel:test          # Test::Unit
     rake parallel:spec          # RSpec
     rake parallel:features      # Cucumber
 
-    rake parallel:test[1] --> force 1 CPU --> 86 seconds
-    rake parallel:test    --> got 2 CPUs? --> 47 seconds
-    rake parallel:test    --> got 4 CPUs? --> 26 seconds
+    rake parallel:spec[1] --> force 1 CPU --> 86 seconds
+    rake parallel:spec    --> got 2 CPUs? --> 47 seconds
+    rake parallel:spec    --> got 4 CPUs? --> 26 seconds
     ...
 
 Test by pattern (e.g. use one integration server per subfolder / see if you broke any 'user'-related tests)
@@ -91,9 +36,6 @@ Log test runtime to give each process the same test runtime.
 
 Add to your `spec/parallel_spec.opts` (or `spec/spec.opts`) :
 
-    RSpec 1.x:
-      --format progress
-      --format ParallelSpecs::SpecRuntimeLogger:tmp/parallel_profile.log
     RSpec >= 2.4:
       Installed as plugin: -I vendor/plugins/parallel_tests/lib
       --format progress
@@ -106,9 +48,6 @@ This logger stops the different processes overwriting each other's output.
 
 Add the following to your `spec/parallel_spec.opts` (or `spec/spec.opts`) :
 
-    RSpec 1.x:
-      --format progress
-      --format ParallelSpecs::SpecSummaryLogger:tmp/spec_summary.log
     RSpec >= 2.2:
       --format progress
       --format ParallelSpecs::SpecSummaryLogger --out tmp/spec_summary.log
@@ -124,8 +63,6 @@ E.g.
 
 Add the following to your `spec/parallel_spec.opts` (or `spec/spec.opts`) :
 
-    RSpec 1.x:
-      --format ParallelSpecs::SpecFailuresLogger:tmp/failing_specs.log
     RSpec >= 2.4:
       --format ParallelSpecs::SpecFailuresLogger --out tmp/failing_specs.log
 
