@@ -1,5 +1,5 @@
 Speedup RSpec + Cucumber by running parallel on multiple CPUs (or cores).<br/>
-ParallelTests runs each file with individual process.
+ParallelTests splits files in even groups and runs each group with individual process.
 
 ### 4: Run!
     rake parallel:spec          # RSpec
