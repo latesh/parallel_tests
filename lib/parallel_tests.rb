@@ -14,7 +14,8 @@ class ParallelTests
     # parallel:spec[2,models,options]
     # parallel:spec[,models,options]
     count = args.shift if args.first.to_s =~ /^\d*$/
-    num_processes = (count.to_s.empty? ? Parallel.processor_count : count.to_i)
+    processor_count = Parallel.processor_count == 1 ? 2 : Parallel.processor_count
+    num_processes = (count.to_s.empty? ? processor_count : count.to_i)
 
     pattern = args.shift
     options = args.shift
